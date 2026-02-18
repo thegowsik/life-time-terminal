@@ -1,4 +1,4 @@
-# ⏳ LIFE TIME TERMINAL (PROJECT INCEPTION)
+# ⏳ LIFE TIME TERMINAL 
 
 > *"You're waiting for a train. A train that will take you far away..."*
 
