@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT INCEPTION: LIFE STATS</title>
+    <style>
+        /* --- CORE VISUALS --- */
+        body {
+            background-color: #000;
+            color: #00FFFF; /* Cyan / Aqua */
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-transform: uppercase;
+            user-select: none;
+        }
+
+        /* TV STATIC OVERLAY */
+        body::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        #container {
+            width: 900px;
+            border: 2px solid #00FFFF;
+            padding: 30px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
+            position: relative;
+            z-index: 1;
+            background: rgba(0, 15, 15, 0.9);
+        }
+
+        /* --- INPUT SCREEN --- */
+        #start-screen {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 40px;
+        }
+
+        input {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00FFFF;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1.5rem;
+            text-align: center;
+            padding: 10px;
+            outline: none;
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        button {
+            background: #00FFFF;
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 200px;
+            margin: 20px auto 0;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #fff;
+            box-shadow: 0 0 20px #00FFFF;
+        }
+
+        /* --- MAIN DASHBOARD (Hidden) --- */
+        #main-display {
+            display: none;
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px dashed #00FFFF;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* GRID LAYOUT FOR TIME STATS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 Columns */
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #00aaaa;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 0 5px #00FFFF;
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        /* QUOTE AREA */
+        .quote-container {
+            border-top: 2px dashed #00FFFF;
+            padding-top: 20px;
+            text-align: center;
+            height: 60px;
+        }
+
+        .quote-text {
+            font-size: 1.1rem;
+            color: #fff;
+            font-style: italic;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* BLINK ANIMATION */
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+
+    </style>
+</head>
+<body>
+
+    <audio id="bg-audio" loop>
+        <source src="inception.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="container">
+
+        <div id="start-screen">
+            <h1 style="margin:0;">// LIFE_TIMELINE_INIT //</h1>
+            <p>ESTABLISH CONNECTION</p>
+            <input type="text" id="inp-name" placeholder="ENTER CODENAME" autocomplete="off">
+            <input type="number" id="inp-age" placeholder="ENTER AGE" autocomplete="off">
+            <button onclick="initializeSystem()">CONNECT</button>
+        </div>
+
+        <div id="main-display">
+            
+            <div class="header-info">
+                <span>SUBJECT: <span id="out-name" style="color:white"></span></span>
+                <span>STATUS: <span class="blink" style="color:#0f0">ONLINE</span></span>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div><span class="emoji">🎂</span> <span class="stat-label">YEARS</span></div>
+                    <span id="val-years" class="stat-value">0</span>
+                </div>
+                <div class="stat-box">
+                    <div><span class="emoji">🌙</span> <span class="stat-label">MONTHS</span></div>
+                    <span id="val-months" class="stat-value">0</span>
+                </div>
+
+                <div class="stat-box">
+                    <div><span class="emoji">📅</span> <span class="stat-label">WEEKS</span></div>
+                    <span id="val-weeks" class="stat-value">0</span>
+                </div>
+                <div class="stat-box">
+                    <div><span class="emoji">☀️</span> <span class="stat-label">DAYS</span></div>
+                    <span id="val-days" class="stat-value">0</span>
+                </div>
+
+                <div class="stat-box">
+                    <div><span class="emoji">⌚</span> <span class="stat-label">HOURS</span></div>
+                    <span id="val-hours" class="stat-value">0</span>
+                </div>
+                <div class="stat-box">
+                    <div><span class="emoji">⏱️</span> <span class="stat-label">MINUTES</span></div>
+                    <span id="val-mins" class="stat-value">0</span>
+                </div>
+            </div>
+
+            <div class="stat-box" style="justify-content: center; margin-bottom: 20px; border-color: #fff;">
+                <span class="emoji">⚡</span> 
+                <span class="stat-label" style="margin-right: 20px;">TOTAL SECONDS LIVED:</span>
+                <span id="val-secs" class="stat-value" style="font-size: 1.8rem; color: #ff0055;">0</span>
+            </div>
+
+            <div class="quote-container">
+                <div id="dynamic-quote" class="quote-text">CALCULATING TIMELINE...</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // GLOBAL VARIABLES
+        let totalSecondsLived = 0;
+        
+        // Calculated real-time stats
+        let stats = {
+            years: 0,
+            months: 0,
+            weeks: 0,
+            days: 0,
+            hours: 0,
+            minutes: 0
+        };
+
+        function initializeSystem() {
+            const name = document.getElementById('inp-name').value;
+            const age = document.getElementById('inp-age').value;
+
+            if(!name || !age) {
+                alert("ERROR: INPUT REQUIRED");
+                return;
+            }
+
+            // 1. Hide Start, Show Main
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('main-display').style.display = 'block';
+            document.getElementById('out-name').innerText = name.toUpperCase();
+
+            // 2. Play Audio
+            const audio = document.getElementById('bg-audio');
+            audio.volume = 1.0;
+            audio.play().catch(e => console.log("Audio requires interaction"));
+
+            // 3. INITIAL MATH (Add random offset for realism)
+            // Age * 365.25 * 24 * 60 * 60
+            const baseSeconds = age * 31557600; 
+            // Add random 0 to 364 days worth of seconds to make it look real
+            const randomOffset = Math.floor(Math.random() * 31557600); 
+            
+            totalSecondsLived = baseSeconds + randomOffset;
+
+            // 4. Start Loops
+            updateClock(); // Run once immediately
+            setInterval(updateClock, 1000); // Run every second
+            
+            // Start Quote Rotator (every 2 seconds)
+            setInterval(showDynamicQuote, 2500);
+        }
+
+        function updateClock() {
+            totalSecondsLived++;
+
+            // Calculate formatted numbers for display
+            // Note: These are "Total Time" stats (e.g. Total hours lived), not a clock breakdown
+            stats.years = (totalSecondsLived / 31557600).toFixed(2); // Decimal years
+            stats.months = Math.floor(totalSecondsLived / 2629800);
+            stats.weeks = Math.floor(totalSecondsLived / 604800);
+            stats.days = Math.floor(totalSecondsLived / 86400);
+            stats.hours = Math.floor(totalSecondsLived / 3600);
+            stats.minutes = Math.floor(totalSecondsLived / 60);
+
+            // Update DOM
+            document.getElementById('val-years').innerText = stats.years;
+            document.getElementById('val-months').innerText = stats.months.toLocaleString();
+            document.getElementById('val-weeks').innerText = stats.weeks.toLocaleString();
+            document.getElementById('val-days').innerText = stats.days.toLocaleString();
+            document.getElementById('val-hours').innerText = stats.hours.toLocaleString();
+            document.getElementById('val-mins').innerText = stats.minutes.toLocaleString();
+            document.getElementById('val-secs').innerText = totalSecondsLived.toLocaleString();
+        }
+
+        // --- DYNAMIC QUOTES ENGINE ---
+        // These quotes use placeholders that we replace with real numbers
+        const quoteTemplates = [
+            "You have breathed for {hours} hours. Make the next one count.",
+            "{days} days have passed since your inception.",
+            "Time is a currency. You have spent {minutes} minutes.",
+            "{secs} seconds gone forever. Don't waste the next.",
+            "You are {years} years into your story. Is it a good one?",
+            "Tick Tock. {secs} seconds on the clock.",
+            "You have survived {weeks} weeks of reality."
+        ];
+
+        let quoteIndex = 0;
+
+        function showDynamicQuote() {
+            // 1. Get template
+            let text = quoteTemplates[quoteIndex];
+
+            // 2. Replace placeholders with current stats
+            text = text.replace("{hours}", stats.hours.toLocaleString());
+            text = text.replace("{days}", stats.days.toLocaleString());
+            text = text.replace("{minutes}", stats.minutes.toLocaleString());
+            text = text.replace("{secs}", totalSecondsLived.toLocaleString());
+            text = text.replace("{years}", stats.years);
+            text = text.replace("{weeks}", stats.weeks.toLocaleString());
+
+            // 3. Display with fade effect
+            const quoteBox = document.getElementById('dynamic-quote');
+            quoteBox.style.opacity = 0;
+            
+            setTimeout(() => {
+                quoteBox.innerText = "\"" + text + "\"";
+                quoteBox.style.opacity = 1;
+            }, 200);
+
+            // 4. Cycle index
+            quoteIndex++;
+            if(quoteIndex >= quoteTemplates.length) quoteIndex = 0;
+        }
+
+    </script>
+</body>
+</html>
