@@ -2,7 +2,7 @@
 
 > *"You're waiting for a train. A train that will take you far away..."*
 
-### 🔴 [LIVE SYSTEM PREVIEW](https://thegowsik.github.io/life-time-terminal/)
+### RUN THE SITE:(https://thegowsik.github.io/life-time-terminal/)
 
 **Life Time Terminal** is a cinematic, browser-based "Reality Check" dashboard inspired by the visual aesthetics of the movie *Inception* and retro CRT monitors. 
 
